@@ -12,9 +12,16 @@ defmodule Board do
   """
 
   defstruct [
-    :squares
+    :squares,
+    :current_winning_x_value,
+    :current_winning_y_value
   ]
 
+  @spec generate_board() :: %Board{
+          current_winning_x_value: nil,
+          current_winning_y_value: nil,
+          squares: any()
+        }
   def generate_board() do
     generate_squares()
     |> generate_row_values()
