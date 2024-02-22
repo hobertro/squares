@@ -1,5 +1,4 @@
 defmodule Board do
-
   @moduledoc """
   Documentation for `Board`.
   """
@@ -33,13 +32,15 @@ defmodule Board do
     # 10 arrays, each with 10 hashes with x,y, and owner values
 
     # How would you do this with a for loop?
-    squares = Enum.reduce(1..num, [], fn _num, acc ->
-      row = Enum.reduce(1..num, [], fn _inner_num, inner_acc ->
-        [%Square{owner: "", x_value: "", y_value: ""} | inner_acc]
-      end)
+    squares =
+      Enum.reduce(1..num, [], fn _num, acc ->
+        row =
+          Enum.reduce(1..num, [], fn _inner_num, inner_acc ->
+            [%Square{owner: "", x_value: "", y_value: ""} | inner_acc]
+          end)
 
-      [row | acc]
-    end)
+        [row | acc]
+      end)
 
     %Board{squares: squares}
   end
@@ -52,16 +53,18 @@ defmodule Board do
 
   def generate_row_values(%Board{squares: squares}) do
     list_of_random_numbers = RandomGenerator.generate_unique_numbers(10)
-    squares_with_index = squares |> Enum.with_index
+    squares_with_index = squares |> Enum.with_index()
 
-    squares = Enum.reduce(squares_with_index, [], fn {row, index}, acc ->
-      new_row = Enum.reduce(row, [], fn map, inner_acc ->
-        value = Enum.at(list_of_random_numbers, index)
-        [Map.put(map, :x_value, value) | inner_acc]
+    squares =
+      Enum.reduce(squares_with_index, [], fn {row, index}, acc ->
+        new_row =
+          Enum.reduce(row, [], fn map, inner_acc ->
+            value = Enum.at(list_of_random_numbers, index)
+            [Map.put(map, :x_value, value) | inner_acc]
+          end)
+
+        [new_row | acc]
       end)
-
-      [new_row | acc]
-    end)
 
     %Board{squares: squares}
   end
@@ -70,15 +73,18 @@ defmodule Board do
   def generate_column_values(%Board{squares: squares}) do
     list_of_random_numbers = RandomGenerator.generate_unique_numbers(10)
 
-    squares = Enum.reduce(squares, [], fn row, acc ->
-      row_with_index = row |> Enum.with_index()
-      new_row = Enum.reduce(row_with_index, [], fn {map, index}, inner_acc ->
-        value = Enum.at(list_of_random_numbers, index)
-        [Map.put(map, :y_value, value) | inner_acc]
-      end)
+    squares =
+      Enum.reduce(squares, [], fn row, acc ->
+        row_with_index = row |> Enum.with_index()
 
-      [new_row | acc]
-    end)
+        new_row =
+          Enum.reduce(row_with_index, [], fn {map, index}, inner_acc ->
+            value = Enum.at(list_of_random_numbers, index)
+            [Map.put(map, :y_value, value) | inner_acc]
+          end)
+
+        [new_row | acc]
+      end)
 
     %Board{squares: squares}
   end

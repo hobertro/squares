@@ -13,8 +13,8 @@ defmodule Square do
   end
 
   def update_winning_square(%Board{} = board, %Score{} = score) do
-    home_score = score.home_score |> Integer.digits |> List.last
-    away_score = score.away_score |> Integer.digits |> List.last
+    home_score = score.home_score |> Integer.digits() |> List.last()
+    away_score = score.away_score |> Integer.digits() |> List.last()
 
     # How can we update both of these at the same time?
     key = :is_winner
@@ -27,17 +27,19 @@ defmodule Square do
   end
 
   def update_square(%Board{squares: squares}, x_value, y_value, key, value) do
-    count = Enum.at(squares, 0) |> Enum.count
-    updated_squares = squares
-    |> List.flatten()
-    |> Enum.map(fn square ->
-      if x_value == square.x_value and y_value == square.y_value do
-        Map.put(square, key, value)
-      else
-        square
-      end
-    end)
-    |> Enum.chunk_every(count)
+    count = Enum.at(squares, 0) |> Enum.count()
+
+    updated_squares =
+      squares
+      |> List.flatten()
+      |> Enum.map(fn square ->
+        if x_value == square.x_value and y_value == square.y_value do
+          Map.put(square, key, value)
+        else
+          square
+        end
+      end)
+      |> Enum.chunk_every(count)
 
     %Board{squares: updated_squares}
   end
