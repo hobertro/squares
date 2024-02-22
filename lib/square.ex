@@ -16,6 +16,7 @@ defmodule Square do
     home_score = score.home_score |> Integer.digits |> List.last
     away_score = score.away_score |> Integer.digits |> List.last
 
+    # How can we update both of these at the same time?
     key = :is_winner
     value = true
     updated_board = __MODULE__.update_square(board, home_score, away_score, key, value)

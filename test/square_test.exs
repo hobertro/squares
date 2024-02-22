@@ -1,5 +1,6 @@
 defmodule SquareTest do
   use ExUnit.Case
+  require Square
 
   test "updating square owner" do
     squares = [[%Square{x_value: 1, y_value: 1, owner: nil}, %Square{x_value: 1, y_value: 2, owner: nil}, %Square{x_value: 1, y_value: 3, owner: nil}], [%Square{x_value: 2, y_value: 1, owner: nil}, %Square{x_value: 2, y_value: 2, owner: nil}, %Square{x_value: 2, y_value: 3, owner: nil}], [%Square{x_value: 3, y_value: 1, owner: nil}, %Square{x_value: 3, y_value: 2, owner: nil}, %Square{x_value: 3, y_value: 3, owner: nil}]]
