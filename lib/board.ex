@@ -16,13 +16,13 @@ defmodule Board do
     :current_winning_y_value
   ]
 
-  @spec generate_board() :: %Board{
+  @spec generate_board(number()) :: %Board{
           current_winning_x_value: nil,
           current_winning_y_value: nil,
           squares: any()
         }
-  def generate_board() do
-    generate_squares()
+  def generate_board(num_squares \\ 10) do
+    generate_squares(num_squares)
     |> generate_row_values()
     |> generate_column_values()
   end
