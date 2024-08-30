@@ -3,18 +3,24 @@ defmodule Server.Sleeper.Game do
 
   # https://docs.sleeper.com/
 
-  @refresh_time 10_000
+  @refresh_time_scores 5_000
+  @refresh_time_state 5_000
 
   def start(sport) do
-    GenServer.start(Server.Sleeper.Game, sport)
+    GenServer.start(Server.Sleeper.Game, sport, name: __MODULE__)
   end
 
+  @spec get_state(atom() | pid() | {atom(), any()} | {:via, atom(), any()}) :: any()
   def get_state(pid) do
     GenServer.call(pid, :get_state)
   end
 
   def get_scores(pid) do
     GenServer.call(pid, :get_scores)
+  end
+
+  def stop_server() do
+    GenServer.call(__MODULE__, :stop_server)
   end
 
   def refresh_scores(pid) do
@@ -26,11 +32,12 @@ defmodule Server.Sleeper.Game do
   end
 
   def init(sport) do
-      new_state = set_initial_state(sport)
+    new_state = set_initial_state(sport)
 
+    :timer.send_interval(@refresh_time_scores, :refresh_scores)
+    :timer.send_interval(@refresh_time_state, :refresh_state)
 
-      {:ok, new_state}
-    end
+    {:ok, new_state}
   end
 
   def set_initial_state(sport) do
@@ -54,14 +61,18 @@ defmodule Server.Sleeper.Game do
     end
   end
 
-  def handle_cast(:refresh_state, state) do
+  def handle_info(:refresh_state, state) do
+    IO.puts("Refreshing state...")
     {:ok, http_response} = External.Sleeper.get(state["sport"], "state")
     new_state = Jason.decode!(http_response.body)
     updated_state = state |> Map.put("state", new_state)
+
+    # Process.send_after(__MODULE__, :refresh_state, @refresh_time_state)
     {:noreply, updated_state}
   end
 
-  def handle_cast(:refresh_scores, state) do
+  def handle_info(:refresh_scores, state) do
+    IO.puts("Refreshing scores...")
     {:ok, http_response} =
       External.Sleeper.get(
         state["sport"],
@@ -73,6 +84,8 @@ defmodule Server.Sleeper.Game do
 
     new_state = Jason.decode!(http_response.body)
     updated_state = state |> Map.put("scores", new_state)
+
+    # Process.send_after(__MODULE__, :refresh_scores, @refresh_time_scores)
     {:noreply, updated_state}
   end
 
@@ -82,5 +95,9 @@ defmodule Server.Sleeper.Game do
 
   def handle_call(:get_state, _, state) do
     {:reply, state["state"], state}
+  end
+
+  def handle_call(:stop_server  , _, state) do
+    {:stop, "Forced stop", state}
   end
 end
