@@ -13,10 +13,18 @@ defmodule Board do
   defstruct [
     :squares,
     :current_winning_x_value,
-    :current_winning_y_value
+    :current_winning_y_value,
+    :x_value_team,
+    :y_value_team,
+    :game_id
   ]
 
   @spec generate_board(number()) :: %Board{
+          current_winning_x_value: nil,
+          current_winning_y_value: nil,
+          squares: any()
+        }
+  @spec generate_board() :: %Board{
           current_winning_x_value: nil,
           current_winning_y_value: nil,
           squares: any()
