@@ -12,6 +12,11 @@ defmodule Square do
     __MODULE__.update_square(board, x_value, y_value, key, user)
   end
 
+  def remove_user(%Board{} = board, x_value, y_value) do
+    key = :owner
+    update_square(board, x_value, y_value, key, "")
+  end
+
   def update_winning_square(%Board{} = board, %Score{} = score) do
     home_score = score.home_score |> Integer.digits() |> List.last()
     away_score = score.away_score |> Integer.digits() |> List.last()
