@@ -7,6 +7,26 @@ defmodule Square do
     :quarter_won
   ]
 
+  def get_square(%Board{squares: squares}, x_value, y_value) do
+    squares
+    |> List.flatten()
+    |> Enum.find(fn square ->
+      x_value == square.x_value and y_value == square.y_value
+    end)
+  end
+
+  def can_update_square?(%Board{} = board, x_value, y_value, user, score_start_time) do
+    square = __MODULE__.get_square(board, x_value, y_value)
+    time_now = DateTime.utc_now() |> DateTime.from_unix(:millisecond)
+
+    cond do
+      is_nil(square) ->{:error, "Square does not exist"}
+      square.user && (square.user != user) -> {:error, "Only the existing user can update the square"}
+      time_now > score_start_time -> {:error, "The game has already started"}
+      true -> true
+    end
+  end
+
   def update_square_owner(board, x_value, y_value, user) do
     key = :owner
     __MODULE__.update_square(board, x_value, y_value, key, user)
